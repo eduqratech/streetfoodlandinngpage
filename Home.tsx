@@ -10,7 +10,7 @@ import { FoodCard } from './components/FoodCard';
 import { RestaurantCard } from './components/RestaurantCard';
 import { DeliveryMap } from './components/DeliveryMap';
 // Added Star to the imports
-import { Moon, Sun, ChevronDown, ArrowRight, Flame, Search, ShoppingBag, Star } from 'lucide-react';
+import { Moon, Sun, ChevronDown, ArrowRight, Flame, Search, ShoppingBag, Star, Menu, X } from 'lucide-react';
 
 const App: React.FC = () => {
   const navigate = useNavigate();
@@ -18,6 +18,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
@@ -62,25 +63,52 @@ const App: React.FC = () => {
   return (
     <div className={`min-h-screen transition-colors duration-1000 ${bgColor} ${textColor} selection:bg-[#C5A059] selection:text-white`}>
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 py-6 backdrop-blur-md border-b transition-all duration-300 bg-black/60 border-white/10">
-        <div className="flex items-center gap-12">
-          <span className="text-2xl serif tracking-tighter font-bold italic text-white cursor-pointer" onClick={() => navigate('/')}>ZYNROVA</span>
-          <div className="hidden lg:flex items-center gap-10 text-[10px] tracking-[0.4em] uppercase font-medium text-white/70">
-            <a href="#home" className="hover:text-[#C5A059] transition-colors">Home</a>
-            <a href="#signature" className="hover:text-[#C5A059] transition-colors">Signatures</a>
-            <a href="#nearby" className="hover:text-[#C5A059] transition-colors">Restaurants</a>
-            <a href="#culture" className="hover:text-[#C5A059] transition-colors">Culture</a>
+      <nav className="fixed top-0 left-0 w-full z-50 px-6 py-4 md:px-8 md:py-6 backdrop-blur-md border-b transition-all duration-300 bg-black/60 border-white/10">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-12">
+            <span className="text-xl md:text-2xl serif tracking-tighter font-bold italic text-white cursor-pointer" onClick={() => navigate('/')}>ZYNROVA</span>
+            <div className="hidden lg:flex items-center gap-10 text-[10px] tracking-[0.4em] uppercase font-medium text-white/70">
+              <a href="#home" className="hover:text-[#C5A059] transition-colors">Home</a>
+              <a href="#signature" className="hover:text-[#C5A059] transition-colors">Signatures</a>
+              <a href="#nearby" className="hover:text-[#C5A059] transition-colors">Restaurants</a>
+              <a href="#culture" className="hover:text-[#C5A059] transition-colors">Culture</a>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 md:gap-8">
+            <button
+              onClick={() => navigate('/cart')}
+              className="relative p-2 rounded-full transition-all bg-white/5 hover:bg-[#C5A059] text-white hover:text-white"
+            >
+              <ShoppingBag size={20} />
+              <span className="absolute -top-1 -right-1 bg-[#C5A059] text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full">2</span>
+            </button>
+            <button
+              className="lg:hidden p-2 text-white hover:text-[#C5A059] transition-colors"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
           </div>
         </div>
-        <div className="flex items-center gap-8">
-          <button
-            onClick={() => navigate('/cart')}
-            className="relative p-2 rounded-full transition-all bg-white/5 hover:bg-[#C5A059] text-white hover:text-white"
-          >
-            <ShoppingBag size={20} />
-            <span className="absolute -top-1 -right-1 bg-[#C5A059] text-white text-[8px] w-4 h-4 flex items-center justify-center rounded-full">2</span>
-          </button>
-        </div>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="lg:hidden overflow-hidden bg-black/90 backdrop-blur-xl absolute top-full left-0 w-full border-b border-white/10"
+            >
+              <div className="flex flex-col gap-6 p-8 text-center text-xs tracking-[0.4em] uppercase font-medium text-white/80">
+                <a href="#home" onClick={() => setIsMenuOpen(false)} className="hover:text-[#C5A059] py-2">Home</a>
+                <a href="#signature" onClick={() => setIsMenuOpen(false)} className="hover:text-[#C5A059] py-2">Signatures</a>
+                <a href="#nearby" onClick={() => setIsMenuOpen(false)} className="hover:text-[#C5A059] py-2">Restaurants</a>
+                <a href="#culture" onClick={() => setIsMenuOpen(false)} className="hover:text-[#C5A059] py-2">Culture</a>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       {/* Hero */}
@@ -94,18 +122,18 @@ const App: React.FC = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#121212]/70" />
         </motion.div>
 
-        <div className="relative z-10 text-center px-4">
+        <div className="relative z-10 text-center px-4 md:px-0">
           <FadeIn>
-            <p className="text-[#C5A059] text-[10px] tracking-[0.8em] uppercase mb-10">Artisan Street Culture</p>
+            <p className="text-[#C5A059] text-[10px] tracking-[0.8em] uppercase mb-6 md:mb-10">Artisan Street Culture</p>
           </FadeIn>
           <RevealText
             text="Born on the streets.Crafted for indulgence."
-            className="text-6xl md:text-9xl serif italic leading-tight mb-12"
+            className="text-4xl md:text-6xl lg:text-9xl serif italic leading-tight mb-8 md:mb-12"
           />
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}>
             <button
               onClick={() => navigate('/enter-taste')}
-              className="px-12 py-5 border border-[#C5A059] text-[#C5A059] text-xs tracking-[0.6em] uppercase hover:bg-[#C5A059] hover:text-white transition-all duration-700"
+              className="px-8 py-4 md:px-12 md:py-5 border border-[#C5A059] text-[#C5A059] text-[10px] md:text-xs tracking-[0.4em] md:tracking-[0.6em] uppercase hover:bg-[#C5A059] hover:text-white transition-all duration-700"
             >
               Enter the Taste
             </button>
@@ -118,14 +146,14 @@ const App: React.FC = () => {
       </section>
 
       {/* Narrative Section */}
-      <section className="py-24 px-8 max-w-7xl mx-auto flex flex-col md:flex-row gap-20 items-center">
-        <div className="md:w-1/2">
+      <section className="py-16 md:py-24 px-6 md:px-8 max-w-7xl mx-auto flex flex-col md:flex-row gap-12 md:gap-20 items-center">
+        <div className="md:w-1/2 order-2 md:order-1">
           <FadeIn delay={0.2}>
-            <p className="text-[#C5A059] text-xs tracking-[0.5em] uppercase mb-8">The Philosophy</p>
+            <p className="text-[#C5A059] text-xs tracking-[0.5em] uppercase mb-6 md:mb-8">The Philosophy</p>
           </FadeIn>
           <RevealText
             text="From street fire to refined flavour."
-            className="text-5xl md:text-7xl serif italic leading-[1.2] mb-12"
+            className="text-4xl md:text-5xl lg:text-7xl serif italic leading-[1.2] mb-8 md:mb-12"
           />
           <FadeIn delay={0.4}>
             <p className="text-sm opacity-60 leading-[2] font-light mb-8 max-w-lg">
@@ -141,9 +169,9 @@ const App: React.FC = () => {
             </button>
           </FadeIn>
         </div>
-        <div className="md:w-1/2 grid grid-cols-2 gap-4">
+        <div className="md:w-1/2 grid grid-cols-2 gap-4 order-1 md:order-2">
           <FadeIn delay={0.3} direction="left">
-            <div className="aspect-[3/4] rounded-sm overflow-hidden translate-y-20">
+            <div className="aspect-[3/4] rounded-sm overflow-hidden translate-y-12 md:translate-y-20">
               <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover" alt="Street" />
             </div>
           </FadeIn>
@@ -156,18 +184,18 @@ const App: React.FC = () => {
       </section>
 
       {/* Signature Grid */}
-      <section id="signature" className="py-24 px-8 md:px-[5vw]">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-12">
-          <div>
+      <section id="signature" className="py-16 md:py-24 px-6 md:px-[5vw]">
+        <div className="flex flex-col xl:flex-row justify-between items-end mb-16 md:mb-24 gap-8 md:gap-12">
+          <div className="w-full xl:w-auto">
             <FadeIn>
               <p className="text-[#C5A059] text-xs tracking-[0.5em] uppercase mb-6">Signature Selection</p>
             </FadeIn>
-            <RevealText text="The Craft Gallery" className="text-5xl md:text-6xl serif italic" />
+            <RevealText text="The Craft Gallery" className="text-4xl md:text-5xl lg:text-6xl serif italic" />
 
           </div>
-          <div className="flex flex-col md:flex-row items-end gap-8">
+          <div className="flex flex-col md:flex-row items-start md:items-end gap-8 w-full xl:w-auto">
             <FadeIn delay={0.2}>
-              <div className="flex items-center gap-3 border-b pb-1 border-white mb-1 min-w-[200px] shadow-[0_2px_15px_rgba(255,255,255,0.1)]">
+              <div className="flex items-center gap-3 border-b pb-1 border-white mb-1 w-full md:min-w-[200px] shadow-[0_2px_15px_rgba(255,255,255,0.1)]">
                 <Search size={14} className="text-white" />
                 <input
                   type="text"
@@ -179,7 +207,7 @@ const App: React.FC = () => {
               </div>
             </FadeIn>
             <FadeIn delay={0.3}>
-              <div className="flex gap-10 text-[10px] tracking-[0.3em] uppercase opacity-60">
+              <div className="flex flex-wrap gap-4 md:gap-10 text-[10px] tracking-[0.3em] uppercase opacity-60">
                 {['All', 'Spicy', 'Craft', 'Vegetarian', 'Sea'].map(cat => (
                   <button
                     key={cat}
@@ -207,10 +235,10 @@ const App: React.FC = () => {
       </section>
 
       {/* Nearby Restaurants */}
-      <section id="nearby" className="py-24 px-8 bg-[#0a0a0a]">
+      <section id="nearby" className="py-16 md:py-24 px-6 md:px-8 bg-[#0a0a0a]">
         <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center mb-16">
-            <RevealText text="Kitchens in your vicinity" className="text-4xl serif italic" />
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 md:mb-16 gap-6">
+            <RevealText text="Kitchens in your vicinity" className="text-3xl md:text-4xl serif italic" />
             <FadeIn delay={0.4}>
               <button onClick={() => navigate('/map-view')} className="text-[10px] tracking-widest uppercase opacity-40 hover:opacity-100">See Map View</button>
             </FadeIn>
@@ -229,12 +257,12 @@ const App: React.FC = () => {
       </section>
 
       {/* Map Delivery Experience */}
-      <section className="py-20 px-8 md:px-[10vw]">
-        <div className="mb-16 max-w-2xl">
+      <section className="py-16 md:py-20 px-6 md:px-[10vw]">
+        <div className="mb-12 md:mb-16 max-w-2xl">
           <FadeIn>
             <p className="text-[#C5A059] text-xs tracking-[0.5em] uppercase mb-6">Real-Time Journey</p>
           </FadeIn>
-          <RevealText text="Hot. Fast. Tracked." className="text-5xl serif italic mb-8" />
+          <RevealText text="Hot. Fast. Tracked." className="text-4xl md:text-5xl serif italic mb-8" />
           <FadeIn delay={0.4}>
             <p className="text-sm opacity-50 leading-relaxed font-light">Witness your order navigate the city in real-time. Our thermal-shielded delivery vessels ensure the street heat stays within the meal until it reaches your doorstep.</p>
           </FadeIn>
@@ -245,16 +273,16 @@ const App: React.FC = () => {
       </section>
 
       {/* User Reviews */}
-      <section className="py-20 px-8 overflow-hidden">
-        <div className="text-center mb-24">
-          <RevealText text="Voices from the street" className="text-4xl serif italic inline-block" />
+      <section className="py-16 md:py-20 px-0 md:px-8 overflow-hidden">
+        <div className="text-center mb-12 md:mb-24 px-6">
+          <RevealText text="Voices from the street" className="text-3xl md:text-4xl serif italic inline-block" />
         </div>
-        <div className="flex gap-12 overflow-x-auto pb-12 scrollbar-hide px-8">
+        <div className="flex gap-6 md:gap-12 overflow-x-auto pb-12 scrollbar-hide px-6 md:px-8 snap-x snap-mandatory">
           {REVIEWS.map((rev, idx) => (
             <FadeIn key={rev.id} delay={idx * 0.2} direction="right">
               <motion.div
                 whileHover={{ y: -10 }}
-                className={`min-w-[350px] p-10 rounded-sm border ${borderColor} flex flex-col justify-between`}
+                className={`min-w-[85vw] md:min-w-[350px] p-8 md:p-10 rounded-sm border ${borderColor} flex flex-col justify-between snap-center`}
               >
                 <div>
                   <div className="flex gap-1 mb-6">
@@ -278,18 +306,18 @@ const App: React.FC = () => {
       </section>
 
       {/* Culture Section */}
-      <section id="culture" className="py-24 relative">
-        <div className="grid md:grid-cols-2">
-          <div className="h-[80vh] bg-fixed">
+      <section id="culture" className="py-16 md:py-24 relative">
+        <div className="grid grid-cols-1 md:grid-cols-2">
+          <div className="h-[50vh] md:h-[80vh] bg-fixed">
             <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&q=80&w=1200" className="w-full h-full object-cover grayscale" alt="Vendor" />
           </div>
-          <div className="p-20 flex flex-col justify-center bg-[#1a1a1a]">
+          <div className="p-8 md:p-20 flex flex-col justify-center bg-[#1a1a1a]">
             <FadeIn>
-              <p className="text-[#C5A059] text-[10px] tracking-[0.5em] uppercase mb-8">The Community</p>
+              <p className="text-[#C5A059] text-[10px] tracking-[0.5em] uppercase mb-6 md:mb-8">The Community</p>
             </FadeIn>
-            <RevealText text='"We cook for the soul, not just the palate."' className="text-5xl serif italic mb-12" />
+            <RevealText text='"We cook for the soul, not just the palate."' className="text-3xl md:text-5xl serif italic mb-8 md:mb-12" />
             <FadeIn delay={0.4}>
-              <p className="text-sm opacity-50 leading-[2.2] font-light max-w-md mb-12 italic">
+              <p className="text-sm opacity-50 leading-[2.2] font-light max-w-md mb-8 md:mb-12 italic">
                 Our network of 250+ street vendors are the true heroes. Zynrova provides them with global-standard sourcing while keeping their original, generations-old recipes intact.
               </p>
             </FadeIn>
@@ -307,7 +335,7 @@ const App: React.FC = () => {
       </section>
 
       {/* Grand CTA */}
-      <section className="py-32 px-8 text-center relative overflow-hidden bg-black">
+      <section className="py-20 md:py-32 px-6 md:px-8 text-center relative overflow-hidden bg-black">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
@@ -319,9 +347,9 @@ const App: React.FC = () => {
         </div>
         <div className="relative z-10">
           <FadeIn>
-            <p className="text-[#C5A059] text-xs tracking-[0.5em] uppercase mb-12">Immediate Indulgence</p>
+            <p className="text-[#C5A059] text-xs tracking-[0.5em] uppercase mb-8 md:mb-12">Immediate Indulgence</p>
           </FadeIn>
-          <RevealText text="Taste the City." className="text-5xl md:text-8xl serif text-white italic mb-20 leading-tight" />
+          <RevealText text="Taste the City." className="text-5xl md:text-8xl serif text-white italic mb-12 md:mb-20 leading-tight" />
 
           <div className="max-w-md mx-auto">
             <FadeIn delay={0.5}>
@@ -347,7 +375,7 @@ const App: React.FC = () => {
 
 
       {/* Footer */}
-      <footer className={`py-8 px-8 border-t ${borderColor}`}>
+      <footer className={`py-8 px-6 md:px-8 border-t ${borderColor}`}>
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-10">
           <div className="max-w-sm">
             <h4 className="text-2xl serif italic mb-4">Zynrova</h4>
@@ -355,9 +383,9 @@ const App: React.FC = () => {
               A global collective of street masters and digital pioneers. Transforming how the world experiences authentic flavour.
             </p>
             <div className="flex gap-8 text-[10px] tracking-widest uppercase opacity-60">
+              <a href="https://www.linkedin.com/in/suresh-peddinti-5b6941232" target="_blank" rel="noopener noreferrer" className="hover:text-[#C5A059] transition-all cursor-pointer">LinkedIn</a>
               <span onClick={() => navigate('/social/instagram')} className="hover:text-[#C5A059] transition-all cursor-pointer">Instagram</span>
               <span onClick={() => navigate('/social/pinterest')} className="hover:text-[#C5A059] transition-all cursor-pointer">Pinterest</span>
-              <span onClick={() => navigate('/social/vimeo')} className="hover:text-[#C5A059] transition-all cursor-pointer">Vimeo</span>
             </div>
           </div>
 
@@ -373,9 +401,11 @@ const App: React.FC = () => {
             <div className="space-y-3">
               <p className="text-[10px] tracking-widest uppercase font-bold">Contact</p>
               <div className="flex flex-col gap-2 text-[10px] tracking-widest uppercase opacity-40">
-                <span onClick={() => navigate('/inquiry')} className="hover:text-[#C5A059] cursor-pointer">Inquiry</span>
-                <span onClick={() => navigate('/support')} className="hover:text-[#C5A059] cursor-pointer">Support</span>
-                <span onClick={() => navigate('/press')} className="hover:text-[#C5A059] cursor-pointer">Press</span>
+                <a href="mailto:sureshpeddinti221@gmail.com" className="hover:text-[#C5A059] cursor-pointer normal-case">sureshpeddinti221@gmail.com</a>
+                <a href="tel:+919618344086" className="hover:text-[#C5A059] cursor-pointer">+91 9618344086</a>
+                <p className="leading-relaxed hover:text-[#C5A059] transition-colors">
+                  Gallery milinium plaza upperpally chintalmate road, Rangareddy, Hyderbad 500048
+                </p>
               </div>
             </div>
             <div className="space-y-3 hidden md:block">
@@ -387,7 +417,7 @@ const App: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto mt-8 flex justify-between items-center text-[8px] tracking-[0.4em] uppercase opacity-30">
+        <div className="max-w-7xl mx-auto mt-8 flex flex-col md:flex-row gap-4 justify-between items-center text-[8px] tracking-[0.4em] uppercase opacity-30 text-center md:text-left">
           <p>© 2024 ZYNROVA GLOBAL. ALL RIGHTS RESERVED.</p>
           <p>DESIGNED FOR THE EXCEPTIONAL.</p>
         </div>

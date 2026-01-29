@@ -64,11 +64,11 @@ export const DeliveryMap: React.FC<{ theme: string }> = ({ theme }) => {
         </motion.g>
       </svg>
 
-      <div className="absolute top-8 right-8 max-w-xs">
-        <div className={`p-6 backdrop-blur-md ${isDark ? 'bg-black/60 border-white/10' : 'bg-white/80 border-black/10'} border rounded-sm`}>
-          <p className="text-[10px] tracking-[0.3em] uppercase mb-2 opacity-60">Status: En Route</p>
-          <h4 className="text-xl serif italic mb-2">Artisanal Delivery</h4>
-          <p className="text-xs opacity-50 mb-4">Your 48-hour Smoked Brisket is 8 minutes away from your sanctuary.</p>
+      <div className="absolute bottom-4 left-4 right-4 md:top-8 md:right-8 md:left-auto md:bottom-auto md:max-w-xs z-10">
+        <div className={`p-4 md:p-6 backdrop-blur-md ${isDark ? 'bg-black/60 border-white/10' : 'bg-white/80 border-black/10'} border rounded-sm transition-all`}>
+          <p className="text-[8px] md:text-[10px] tracking-[0.3em] uppercase mb-2 opacity-60">Status: En Route</p>
+          <h4 className="text-lg md:text-xl serif italic mb-2">Artisanal Delivery</h4>
+          <p className="text-[10px] md:text-xs opacity-50 mb-4">Your 48-hour Smoked Brisket is 8 minutes away from your sanctuary.</p>
           <button className="text-[10px] tracking-widest uppercase font-bold text-[#C5A059] flex items-center gap-2">
             Track Driver <Navigation size={12} />
           </button>
